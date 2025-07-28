@@ -19,6 +19,7 @@ import { Toolbar } from '@components/toolbar';
 export class Converter implements OnInit, OnDestroy {
   subtitle: string = 'Convert currencies with real-time rates';
   title: string = 'TDS Currency Exchange';
+  showBanner = false;
 
   fiatCurrencies = signal<Currency[]>([]);
   cryptoCurrencies = signal<Currency[]>([]);
@@ -181,7 +182,7 @@ export class Converter implements OnInit, OnDestroy {
               fromFund: state.fromFund,
               toFund: convertedAmount,
             });
-             this.stateService.setConverting(false);
+            this.stateService.setConverting(false);
           }
           this.stateService.setConverting(false);
         },

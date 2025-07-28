@@ -1,3 +1,17 @@
+<!-- Add to the top inside <body> -->
+<div class="info-banner" *ngIf="showBanner">
+  <p>
+    <strong>Note for Hiring Manager:</strong>
+    Please see the README markdown file for summary of submission.
+  </p>
+  <button class="close-banner-btn" (click)="showBanner = false" title="Close">✕</button>
+</div>
+
+<!-- Add to the top-right corner inside the <converter-container> div -->
+<div class="info-icon" (click)="showBanner = !showBanner" title="Show Info">
+  ℹ️
+</div>
+
 <app-toolbar *ngIf="!isLoadingCurrencies()"
   (switchMode)="onSwitchMode()"
   [currencies]="filteredCurrencies()">
