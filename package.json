@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "local": "ng serve  --configuration local",
+    "start": "npm run build && node dist/",
+    "build": "ng build --configuration local",
+    "local": "ng serve --configuration local",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

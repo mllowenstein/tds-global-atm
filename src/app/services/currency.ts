@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { Currency, ConversionResult, CurrencyApiResponse } from '@models';
+import { Currency, ConversionResult, CurrencyApiResponse, CurrencyCache } from '@models';
 import { env } from '@env/env';
 
 @Injectable({
@@ -11,23 +11,36 @@ import { env } from '@env/env';
 export class CurrencyService {
   private baseUrl = env.apiUrl;
 
+  private cache: CurrencyCache = {
+    fiat: [],
+    crypto: [],
+    fiatTimestamp: 0,
+    cryptoTimestamp: 0,
+  };
+
   private currencyCache = signal<Currency[]>([]);
   private cacheTimestamp = 0;
   private CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getCurrencies(type: string = 'fiat'): Observable<Currency[]> {
-    // Simple cache check - in prod would be more sophisticated
-    if (
-      this.currencyCache().length > 0 &&
-      Date.now() - this.cacheTimestamp < this.CACHE_DURATION
-    ) {
-      return of(this.currencyCache());
+  getCurrencies(type?: string): Observable<Currency[]> {
+    // Check cache based on type
+    const isCacheValid =
+      type === 'crypto'
+        ? this.cache.crypto.length > 0 &&
+          Date.now() - this.cache.cryptoTimestamp < this.CACHE_DURATION
+        : this.cache.fiat.length > 0 &&
+          Date.now() - this.cache.fiatTimestamp < this.CACHE_DURATION;
+
+    if (isCacheValid) {
+      console.log(`Returning cached ${type} currencies`);
+      return of(type === 'crypto' ? this.cache.crypto : this.cache.fiat);
     }
 
+    const typeParam = `type=${type ? type : 'fiat'}`;
     return this.http
-      .get<CurrencyApiResponse>(`${this.baseUrl}/currencies?type=${type}`)
+      .get<CurrencyApiResponse>(`${this.baseUrl}/currencies?${typeParam}`)
       .pipe(
         map((response) => {
           // Transform API response to our internal Currency interface
@@ -42,8 +55,15 @@ export class CurrencyService {
           }));
         }),
         tap((currencies) => {
-          this.currencyCache.set(currencies);
-          this.cacheTimestamp = Date.now();
+          // Cache based on type
+          if (type === 'crypto') {
+            this.cache.crypto = currencies;
+            this.cache.cryptoTimestamp = Date.now();
+          } else {
+            this.cache.fiat = currencies;
+            this.cache.fiatTimestamp = Date.now();
+          }
+          console.log(`Cached ${currencies.length} ${type} currencies`);
         }),
         catchError((error) => {
           console.error('Currency fetch failed:', error);
@@ -53,18 +73,41 @@ export class CurrencyService {
       );
   }
 
+  // Clear cache when needed (useful for debugging or forcing refresh)
+  clearCache(type?: 'fiat' | 'crypto'): void {
+    if (type === 'crypto') {
+      this.cache.crypto = [];
+      this.cache.cryptoTimestamp = 0;
+    } else if (type === 'fiat') {
+      this.cache.fiat = [];
+      this.cache.fiatTimestamp = 0;
+    } else {
+      // Clear both
+      this.cache = {
+        fiat: [],
+        crypto: [],
+        fiatTimestamp: 0,
+        cryptoTimestamp: 0,
+      };
+    }
+  }
+
   convertCurrency(
     from: string,
     to: string,
     amount: number
   ): Observable<number> {
-    // Basic validation - would be more comprehensive in prod
+    // Basic validation
     if (!from || !to || amount <= 0) {
       return throwError(() => new Error('Invalid conversion parameters'));
     }
 
     return this.http
-      .get<any>(`${this.baseUrl}/convert?from=${from}&to=${to}&amount=${amount.toString()}`)
+      .get<any>(
+        `${
+          this.baseUrl
+        }/convert?from=${from}&to=${to}&amount=${amount.toString()}`
+      )
       .pipe(
         map((response) => response.value || 0),
         catchError((error) => {

@@ -33,21 +33,84 @@
   }
 }
 
-// Enhanced input styling
+// Additional component imports would go here in production
+// Additional enhancements for the new features
+
+// Enhanced button styles with better hover effects
+.convert-btn {
+  background: var(--btn-primary-bg);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.025em;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  &:hover:not(:disabled) {
+    &::before {
+      left: 100%;
+    }
+
+    &::after {
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--btn-primary-hover);
+    box-shadow: 0 8px 25px rgba(98, 152, 167, 0.4);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Enhanced input styling with floating effects
 .currency-select,
 .amount-input {
   background: var(--input-bg);
   border: 2px solid var(--input-border);
   color: var(--input-text);
+  position: relative;
 
   &::placeholder {
     color: var(--text-tertiary);
+    transition: opacity 0.3s ease;
   }
 
   &:focus {
     border-color: var(--input-focus-border);
     box-shadow: var(--input-focus-shadow);
     background: var(--dark-surface);
+
+    &::placeholder {
+      opacity: 0.5;
+    }
   }
 
   &:disabled {
@@ -57,38 +120,61 @@
   }
 }
 
-// Enhanced swap button
+// Enhanced swap button with rotation animation
 .swap-btn {
   background: var(--swap-btn-bg);
   border: 2px solid var(--swap-btn-border);
   color: var(--text-secondary);
   backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:hover:not(:disabled) {
     background: var(--swap-btn-hover-bg);
     border-color: var(--swap-btn-hover-border);
     color: var(--white);
-    box-shadow: 0 4px 15px rgba(93, 45, 230, 0.3);
+    box-shadow: 0 6px 20px rgba(98, 152, 167, 0.4);
+    transform: scale(1.1) rotate(180deg);
   }
 }
 
-// Enhanced result display
+// Enhanced result display with glow effect
 .result-display {
   background: var(--result-bg);
   border: 2px solid var(--result-border);
   backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: inherit;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 0.5;
+  }
 }
 
 .result-amount {
   color: var(--result-text);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-// Enhanced card styling
+// Enhanced card styling with gradient border
 .converter-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   backdrop-filter: blur(20px);
+  position: relative;
 
   &::before {
     content: '';
@@ -96,8 +182,125 @@
     top: 0;
     left: 0;
     right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--primary-color),
+        var(--secondary-color),
+        transparent);
+    opacity: 0.8;
+    animation: gradientMove 3s ease-in-out infinite;
+  }
+}
+
+@keyframes gradientMove {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(10px);
+  }
+}
+
+// Toolbar enhancements
+.toolbar {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-    opacity: 0.5;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--primary-color-alpha),
+        transparent);
+  }
+}
+
+// Loading state improvements
+.loading {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent);
+    animation: loadingShimmer 1.5s infinite;
+  }
+}
+
+@keyframes loadingShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Better focus indicators for accessibility
+*:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+// Improve form field transitions
+input,
+select,
+button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Add subtle animations to interactive elements
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive typography
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
   }
 }

@@ -55,11 +55,11 @@ export interface ConverterState {
 }
 
 export enum InfoLevel {
-  Basic = 'basic',
   Advanced = 'advanced',
+  Basic = 'basic',
 }
 
-export interface ExchangeState {
+export interface ExchangeState extends ConverterState {
   mode: InfoLevel;
   withCrypto: boolean;
   lastUpdated?: Date;
@@ -72,4 +72,11 @@ export interface PreviousConversion {
   timestamp: Date;
   from: string;
   to: string;
+}
+
+export interface CurrencyCache {
+  fiat: Currency[];
+  crypto: Currency[];
+  fiatTimestamp: number;
+  cryptoTimestamp: number;
 }

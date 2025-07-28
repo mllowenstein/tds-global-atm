@@ -1,64 +1,45 @@
 // styles/_variables.scss
 // Color theme based on provided palette images
 :root {
-  // Primary colors from your palette
-  --primary-color: #6298a7;        // Purple accent
-  --primary-hover: #356e7e;        // Darker purple for hover
+  --primary-color: #6298a7;
+  --primary-hover: #476169;
   --primary-color-alpha: rgba(98, 152, 167, 15%);
-  --secondary-color: #14444e;      // Cyan accent
-
-  // Base colors
-  --dark-primary: #324246;         // Very dark blue/black (main background)
-  --dark-secondary: #14162E;       // Dark blue (secondary background)
-  --dark-tertiary: #1A2C35;        // Dark blue-gray (cards)
-  --dark-surface: #2E3E46;         // Medium dark blue-gray (elevated surfaces)
-
-  // Gray scale
-  --gray-darkest: #030303;         // Almost black
-  --gray-darker: #333333;          // Dark gray
-  --gray-dark: #444444;            // Medium dark gray
-  --gray-medium: #555555;          // Medium gray
-  --gray-light: #5D5D5D;           // Light medium gray
-  --gray-lighter: #A9A9A9;         // Light gray
-  --gray-lightest: #EDEDED;        // Very light gray
-  --white: #FFFFFF;                // Pure white
-
-  // Applied theme colors
+  --secondary-color: #8492a6;
+  --dark-primary: #324246;
+  --dark-secondary: #77798f;
+  --dark-tertiary: #1A2C35;
+  --dark-surface: #1a1b1c;
+  --gray-darkest: #030303;
+  --gray-darker: #333333;
+  --gray-dark: #444444;
+  --gray-medium: #555555;
+  --gray-light: #5D5D5D;
+  --gray-lighter: #A9A9A9;
+  --gray-lightest: #EDEDED;
+  --white: #FFFFFF;
   --text-primary: var(--white);
   --text-secondary: var(--gray-lighter);
   --text-tertiary: var(--gray-light);
-
   --border-color: var(--gray-dark);
   --border-hover: var(--gray-medium);
-
   --input-bg: var(--dark-surface);
   --input-border: var(--gray-dark);
   --input-text: var(--white);
   --disabled-bg: var(--gray-darker);
   --readonly-bg: var(--dark-tertiary);
-
   --card-bg: var(--dark-tertiary);
-  --card-shadow: 0 10px 15px -3px rgba(3, 3, 3, 0.3),
-                 0 4px 6px -2px rgba(3, 3, 3, 0.1);
+  --card-shadow: 0 10px 15px -3px rgba(3, 3, 3, 0.3), 0 4px 6px -2px rgba(3, 3, 3, 0.1);
   --card-border: var(--gray-dark);
-
-  // Success states (using cyan accent)
   --success-color: var(--secondary-color);
   --success-bg: rgba(36, 208, 247, 0.1);
   --success-border: rgba(36, 208, 247, 0.3);
-
-  // Error states (using red tones that complement the palette)
   --error-color: #FF6B6B;
   --error-bg: rgba(255, 107, 107, 0.1);
   --error-border: rgba(255, 107, 107, 0.3);
   --error-hover: #FF5252;
-
-  // Warning states (using purple variations)
   --warning-color: #B794F6;
   --warning-bg: rgba(183, 148, 246, 0.1);
   --warning-border: rgba(183, 148, 246, 0.3);
-
-  // App background
   --app-bg: var(--dark-primary);
   --app-gradient: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 100%);
 }

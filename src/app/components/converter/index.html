@@ -1,26 +1,33 @@
+<app-toolbar *ngIf="!isLoadingCurrencies()"
+  (withCrypto)="onWithCryptoChange()"
+  (switchMode)="onSwitchMode()"
+  [currencies]="filteredCurrencies()">
+</app-toolbar>
 
 <div class="converter-container">
+
   <header class="converter-header">
     <h1 class="title">TDS Global ATM</h1>
     <p class="subtitle">Simple. Fast. Accurate.</p>
   </header>
 
-  <!-- loading currencies -->
   <div *ngIf="isLoadingCurrencies()" class="loading-section">
     <app-loader message="Loading currencies..."></app-loader>
   </div>
 
-  <!-- main converter ui -->
   <div *ngIf="!isLoadingCurrencies()" class="converter-card">
     <div class="input-section">
       <app-funds
         [label]="'From'"
-        [currencies]="currencies()"
+        [currencies]="filteredCurrencies()"
+        [value]="stateService.currentState().fromCurrency"
+        [amount]="stateService.currentState().fromFund"
+        [showFlags]="stateService.isAdvancedMode()"
         (currencyChange)="onFromCurrencyChange($event)"
+        (amountChange)="onFromFundChange($event)"
         [disabled]="stateService.currentState().isLoading">
       </app-funds>
 
-      <!-- Swap button in the middle -->
       <div class="swap-section">
         <button class="swap-btn" (click)="onSwapCurrencies()" [disabled]="stateService.currentState().isLoading"
           title="Swap currencies">
@@ -28,53 +35,36 @@
         </button>
       </div>
 
-      <!-- To currency display -->
-      <!-- <div class="currency-input-group">
-        <label class="input-label">To</label>
-        <div class="input-row">
-          <select class="currency-select" [value]="stateService.currentState().toCurrency"
-            (change)="onToCurrencyChange($event)" [disabled]="stateService.currentState().isLoading">
-            <option value="" disabled>Select currency</option>
-            <option *ngFor="let currency of currencies()" [value]="currency.code">
-              {{ currency.code }} - {{ currency.name }}
-            </option>
-          </select>
-
-          <div class="result-display">
-            <span class="result-amount" *ngIf="stateService.currentState().toFund > 0">
-              {{ stateService.currentState().toFund | number:'1.2-2' }}
-            </span>
-            <span class="result-placeholder" *ngIf="stateService.currentState().toFund === 0">
-              0.00
-            </span>
-          </div>
-        </div>
-      </div> -->
       <app-funds
         [label]="'To'"
-        [currencies]="currencies()"
+        [currencies]="filteredCurrencies()"
+        [value]="stateService.currentState().toCurrency"
+        [amount]="stateService.currentState().toFund"
+        [showFlags]="stateService.isAdvancedMode()"
         (currencyChange)="onToCurrencyChange($event)"
-        [disabled]="stateService.currentState().isLoading">
+        [disabled]="stateService.currentState().isLoading"
+        [readonly]="true">
       </app-funds>
     </div>
 
-    <!-- Convert button - the main action -->
     <div class="action-section">
-      <button class="convert-btn" (click)="onConvert()" [disabled]="stateService.currentState().isLoading ||
+      <button
+        class="convert-btn"
+        (click)="onConvert()"
+        [class.loading]="stateService.currentState().isLoading"
+        [disabled]="stateService.currentState().isLoading ||
                    stateService.currentState().fromFund <= 0 ||
                    !stateService.currentState().fromCurrency ||
-                   !stateService.currentState().toCurrency" [class.loading]="stateService.currentState().isLoading">
+                   !stateService.currentState().toCurrency">
 
-        <app-loader *ngIf="stateService.currentState().isLoading" size="small">
-        </app-loader>
+        <app-loader *ngIf="isConvertingCurrencies()" size="small"></app-loader>
 
-        <span *ngIf="!stateService.currentState().isLoading">
+        <span *ngIf="!stateService.currentState().isLoading || !isConvertingCurrencies()">
           Convert
         </span>
       </button>
     </div>
 
-    <!-- Error display -->
     <div *ngIf="stateService.currentState().error" class="error-section">
       <div class="error-message">
         {{ stateService.currentState().error }}
@@ -84,14 +74,34 @@
       </button>
     </div>
 
-    <!-- Result summary -->
-    <div *ngIf="stateService.currentState().toFund > 0 && !stateService.currentState().error"
-      class="result-summary">
+    <div *ngIf="stateService.currentState().toFund > 0 && !stateService.currentState().error" class="result-summary">
       <div class="conversion-rate">
-        {{ stateService.currentState().fromFund | number:'1.2-2' }}
-        {{ stateService.currentState().fromCurrency }} =
-        <strong>{{ stateService.currentState().toFund | number:'1.2-2' }}
-          {{ stateService.currentState().toCurrency }}</strong>
+        <span class="rate-label">Exchange Rate</span>
+        <div class="rate-display">
+          {{ stateService.currentState().fromFund | number:'1.2-2' }}
+          {{ stateService.currentState().fromCurrency }} =
+          <strong>
+            {{ stateService.currentState().toFund | number:'1.2-8' }}
+            {{ stateService.currentState().toCurrency }}
+          </strong>
+        </div>
+        <span class="rate-timestamp" *ngIf="stateService.currentState().lastUpdated">
+          Updated {{ formatTimestamp(stateService.currentState().lastUpdated) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Advanced Mode Features -->
+    <div *ngIf="stateService.isAdvancedMode() && stateService.currentState().history?.length" class="history-section">
+      <h3 class="history-title">Recent Conversions</h3>
+      <div class="history-list">
+        <div *ngFor="let item of stateService.currentState().history" class="history-item">
+          <span class="history-currencies">
+            {{ item.fromFund | number:'1.2-2' }} {{ item.from }} →
+            {{ item.toFund | number:'1.2-8' }} {{ item.to }}
+          </span>
+          <span class="history-time">{{ formatTimestamp(item.timestamp) }}</span>
+        </div>
       </div>
     </div>
   </div>

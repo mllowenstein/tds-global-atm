@@ -1,16 +1,46 @@
 <div class="currency-input-group">
-  <label class="input-label">From</label>
-  <div class="input-row">
-    <select class="currency-select" [value]="stateService.currentState().fromCurrency"
-      (change)="onCurrencyChange($event)" [disabled]="stateService.currentState().isLoading">
-      <option value="" disabled>Select currency</option>
-      <option *ngFor="let currency of currencies" [value]="currency.code">
-        {{ currency.code }} - {{ currency.name }}
-      </option>
-    </select>
+  <label class="input-label">{{ label }}</label>
+  <div class="input-wrapper">
+    <div class="currency-select-wrapper">
+      <select class="currency-select" [(ngModel)]="selectedCurrency" (ngModelChange)="currencyChange.emit($event)"
+        [disabled]="disabled">
+        <option value="" disabled>Select currency</option>
+        <ng-container *ngIf="!hasCryptoCurrencies()">
+          <option *ngFor="let currency of currencies" [value]="currency.code">
+            {{ showFlags ? getFlagEmoji(currency.code) + ' ' : '' }}{{ currency.code }} - {{ currency.name }}
+          </option>
+        </ng-container>
+        <ng-container *ngIf="hasCryptoCurrencies()">
+          <optgroup label="Fiat Currencies">
+            <option *ngFor="let currency of fiatCurrencies()" [value]="currency.code">
+              {{ showFlags ? getFlagEmoji(currency.code) + ' ' : '' }}{{ currency.code }} - {{ currency.name }}
+            </option>
+          </optgroup>
+          <optgroup label="Cryptocurrencies">
+            <option *ngFor="let currency of cryptoCurrencies()" [value]="currency.code">
+              {{ getCryptoIcon(currency.code) }} {{ currency.code }} - {{ currency.name }}
+            </option>
+          </optgroup>
+        </ng-container>
+      </select>
+      <div class="select-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </div>
+    </div>
 
-    <input type="number" class="amount-input" [value]="stateService.currentState().fromFund"
-      (input)="onAmountChange($event)" [disabled]="stateService.currentState().isLoading" placeholder="Enter amount"
-      step="0.01" min="0">
+    <div class="amount-input-wrapper">
+      <input type="number" class="amount-input" [(ngModel)]="inputAmount" (ngModelChange)="amountChange.emit($event)"
+        [disabled]="disabled" [readonly]="readonly" placeholder="0.00" step="0.01" min="0">
+      <span class="currency-symbol" *ngIf="getSelectedCurrency()">
+        {{ getSelectedCurrency()?.symbol || getSelectedCurrency()?.code }}
+      </span>
+    </div>
+  </div>
+
+  <div class="input-hint" *ngIf="!readonly && inputAmount > 0">
+    <span class="hint-text">{{ formatCurrencyHint() }}</span>
   </div>
 </div>
