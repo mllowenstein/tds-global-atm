@@ -1,5 +1,4 @@
 <app-toolbar *ngIf="!isLoadingCurrencies()"
-  (withCrypto)="onWithCryptoChange()"
   (switchMode)="onSwitchMode()"
   [currencies]="filteredCurrencies()">
 </app-toolbar>
@@ -57,9 +56,9 @@
                    !stateService.currentState().fromCurrency ||
                    !stateService.currentState().toCurrency">
 
-        <app-loader *ngIf="isConvertingCurrencies()" size="small"></app-loader>
+        <app-loader *ngIf="stateService.currentState().isConverting" size="small"></app-loader>
 
-        <span *ngIf="!stateService.currentState().isLoading || !isConvertingCurrencies()">
+        <span *ngIf="!stateService.currentState().isConverting">
           Convert
         </span>
       </button>

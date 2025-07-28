@@ -1,17 +1,8 @@
 <div class="toolbar">
   <div class="toolbar-section">
-    <button class="mode-toggle" [class.active]="stateService.currentState().mode === 'basic'"
-      (click)="onToggleMode()">
+    <button class="mode-toggle" [class.active]="!stateService.isAdvancedMode()" (click)="onToggleMode()">
       <span class="mode-icon">⚡</span>
-      {{ stateService.currentState().mode === 'basic' ? 'Basic' : 'Advanced' }}
+      {{ stateService.isAdvancedMode() ? 'Advanced' : 'Basic' }}
     </button>
-  </div>
-
-  <div class="toolbar-section" *ngIf="stateService.isAdvancedMode()">
-    <label class="crypto-toggle">
-      <input type="checkbox" [checked]="stateService.currentState().withCrypto" (change)="onToggleCrypto()">
-      <span class="toggle-slider"></span>
-      <span class="toggle-label">With Crypto</span>
-    </label>
   </div>
 </div>

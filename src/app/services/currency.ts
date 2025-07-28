@@ -13,9 +13,7 @@ export class CurrencyService {
 
   private cache: CurrencyCache = {
     fiat: [],
-    crypto: [],
     fiatTimestamp: 0,
-    cryptoTimestamp: 0,
   };
 
   private currencyCache = signal<Currency[]>([]);
@@ -27,16 +25,15 @@ export class CurrencyService {
   getCurrencies(type?: string): Observable<Currency[]> {
     // Check cache based on type
     const isCacheValid =
-      type === 'crypto'
-        ? this.cache.crypto.length > 0 &&
-          Date.now() - this.cache.cryptoTimestamp < this.CACHE_DURATION
-        : this.cache.fiat.length > 0 &&
-          Date.now() - this.cache.fiatTimestamp < this.CACHE_DURATION;
+      this.cache.fiat.length > 0 &&
+      Date.now() - this.cache.fiatTimestamp < this.CACHE_DURATION;
 
     if (isCacheValid) {
       console.log(`Returning cached ${type} currencies`);
-      return of(type === 'crypto' ? this.cache.crypto : this.cache.fiat);
+      return of(this.cache.fiat);
     }
+
+    console.log('this should log any mode switch...')
 
     const typeParam = `type=${type ? type : 'fiat'}`;
     return this.http
@@ -56,13 +53,8 @@ export class CurrencyService {
         }),
         tap((currencies) => {
           // Cache based on type
-          if (type === 'crypto') {
-            this.cache.crypto = currencies;
-            this.cache.cryptoTimestamp = Date.now();
-          } else {
-            this.cache.fiat = currencies;
-            this.cache.fiatTimestamp = Date.now();
-          }
+          this.cache.fiat = currencies;
+          this.cache.fiatTimestamp = Date.now();
           console.log(`Cached ${currencies.length} ${type} currencies`);
         }),
         catchError((error) => {
@@ -75,19 +67,14 @@ export class CurrencyService {
 
   // Clear cache when needed (useful for debugging or forcing refresh)
   clearCache(type?: 'fiat' | 'crypto'): void {
-    if (type === 'crypto') {
-      this.cache.crypto = [];
-      this.cache.cryptoTimestamp = 0;
-    } else if (type === 'fiat') {
+    if (type === 'fiat') {
       this.cache.fiat = [];
       this.cache.fiatTimestamp = 0;
     } else {
       // Clear both
       this.cache = {
         fiat: [],
-        crypto: [],
         fiatTimestamp: 0,
-        cryptoTimestamp: 0,
       };
     }
   }

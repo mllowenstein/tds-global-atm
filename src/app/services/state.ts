@@ -11,6 +11,7 @@ export class StateService {
     fromFund: 100,
     toFund: 0,
     isLoading: false,
+    isConverting: false,
     error: null,
     mode: InfoLevel.Basic,
     withCrypto: false,
@@ -26,7 +27,7 @@ export class StateService {
   });
 
   readonly isAdvancedMode = computed(() => {
-    return this.state().mode.toString() === 'advanced';
+    return this.state().mode === InfoLevel.Advanced;
   });
 
   updateState(partial: Partial<ExchangeState>): void {
@@ -43,6 +44,10 @@ export class StateService {
     }));
   }
 
+  setConverting(converting: boolean): void {
+    this.updateState({ isConverting: converting });
+  }
+
   setLoading(loading: boolean): void {
     this.updateState({ isLoading: loading });
   }
@@ -55,16 +60,7 @@ export class StateService {
     this.state.update((current) => ({
       ...current,
       mode:
-        current.mode.valueOf() === 'basic'
-          ? InfoLevel.Advanced
-          : InfoLevel.Basic,
-    }));
-  }
-
-  toggleCrypto(): void {
-    this.state.update((current) => ({
-      ...current,
-      withCrypto: !current.withCrypto,
+        current.mode === InfoLevel.Basic ? InfoLevel.Advanced : InfoLevel.Basic,
     }));
   }
 
@@ -76,7 +72,7 @@ export class StateService {
   }): void {
     this.state.update((current) => ({
       ...current,
-      conversionHistory: [
+      history: [
         { ...conversion, timestamp: new Date() },
         ...(current.history || []).slice(0, 9), // Keep last 10
       ],

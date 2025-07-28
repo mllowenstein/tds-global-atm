@@ -76,26 +76,6 @@ export class Converter implements OnInit, OnDestroy {
       });
   }
 
-  private loadCryptoCurrencies(): void {
-    if (this.cryptoCurrencies().length > 0) return; // Already loaded
-
-    this.isLoadingCurrencies.set(true);
-    this.isConvertingCurrencies.set(false);
-
-    this.currencyService
-      .getCurrencies('crypto')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (currencies) => {
-          console.log('Crypto Currencies:', currencies);
-          this.cryptoCurrencies.set(currencies);
-        },
-        error: (error) => {
-          console.error('Failed to load crypto currencies:', error);
-        },
-      });
-  }
-
   private setDefaultCurrencies(currencies: Currency[]): void {
     const state = this.stateService.currentState();
     if (!state.fromCurrency || !state.toCurrency) {
@@ -121,31 +101,6 @@ export class Converter implements OnInit, OnDestroy {
           this.onConvert();
         }
       });
-  }
-
-  onWithCryptoChange(): void {
-    console.log('Toggle Cryptocurrencies...');
-    // Load crypto currencies if needed
-    if (
-      this.stateService.currentState().withCrypto &&
-      this.cryptoCurrencies().length === 0
-    ) {
-      this.loadCryptoCurrencies();
-    }
-
-    // Reset to fiat currencies if current selection is crypto and we're disabling crypto
-    const state = this.stateService.currentState();
-    if (!state.withCrypto) {
-      const isCrypto = (code: string) =>
-        this.cryptoCurrencies().some((c) => c.code === code);
-
-      if (isCrypto(state.fromCurrency)) {
-        this.stateService.updateState({ fromCurrency: 'USD' });
-      }
-      if (isCrypto(state.toCurrency)) {
-        this.stateService.updateState({ toCurrency: 'EUR' });
-      }
-    }
   }
 
   onSwitchMode(): void {
@@ -201,6 +156,7 @@ export class Converter implements OnInit, OnDestroy {
       );
       return;
     }
+    this.stateService.setConverting(true);
     this.isConvertingCurrencies.set(true);
     this.isLoadingCurrencies.set(false);
     this.stateService.setLoading(true);
@@ -225,12 +181,13 @@ export class Converter implements OnInit, OnDestroy {
               fromFund: state.fromFund,
               toFund: convertedAmount,
             });
-            this.isConvertingCurrencies.set(false);
+             this.stateService.setConverting(false);
           }
+          this.stateService.setConverting(false);
         },
         error: (error: any) => {
           this.stateService.setError(`Conversion failed: ${error.message}`);
-          this.isConvertingCurrencies.set(false);
+          this.stateService.setConverting(false);
         },
       });
   }

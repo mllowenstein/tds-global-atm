@@ -51,6 +51,7 @@ export interface ConverterState {
   fromFund: number;
   toFund: number;
   isLoading: boolean;
+  isConverting: boolean;
   error: string | null;
 }
 
@@ -76,7 +77,5 @@ export interface PreviousConversion {
 
 export interface CurrencyCache {
   fiat: Currency[];
-  crypto: Currency[];
   fiatTimestamp: number;
-  cryptoTimestamp: number;
 }

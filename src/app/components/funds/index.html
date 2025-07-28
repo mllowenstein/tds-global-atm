@@ -10,18 +10,6 @@
             {{ showFlags ? getFlagEmoji(currency.code) + ' ' : '' }}{{ currency.code }} - {{ currency.name }}
           </option>
         </ng-container>
-        <ng-container *ngIf="hasCryptoCurrencies()">
-          <optgroup label="Fiat Currencies">
-            <option *ngFor="let currency of fiatCurrencies()" [value]="currency.code">
-              {{ showFlags ? getFlagEmoji(currency.code) + ' ' : '' }}{{ currency.code }} - {{ currency.name }}
-            </option>
-          </optgroup>
-          <optgroup label="Cryptocurrencies">
-            <option *ngFor="let currency of cryptoCurrencies()" [value]="currency.code">
-              {{ getCryptoIcon(currency.code) }} {{ currency.code }} - {{ currency.name }}
-            </option>
-          </optgroup>
-        </ng-container>
       </select>
       <div class="select-arrow">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
