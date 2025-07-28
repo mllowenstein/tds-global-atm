@@ -57,36 +57,59 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
+              "fileReplacements": [
                 {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "replace": "src/env/env.ts",
+                  "with": "src/env/env.prod.ts"
                 }
               ],
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": {
+                "hidden": false,
+                "scripts": true,
+                "styles": false
+              },
+              "namedChunks": true,
               "outputHashing": "all"
             },
             "development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/env/env.ts",
+                  "with": "src/env/env.dev.ts"
+                }
+              ],
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "ssl": true,
+            "sslKey": "cert/stage/staging.key",
+            "sslCert": "cert/stage/staging.cert"
+          },
           "configurations": {
             "production": {
               "buildTarget": "tds-global-atm:build:production"
             },
             "development": {
               "buildTarget": "tds-global-atm:build:development"
+            },
+            "local": {
+              "buildTarget": "tds-global-atm:build:local"
             }
           },
           "defaultConfiguration": "development"

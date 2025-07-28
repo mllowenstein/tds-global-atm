@@ -1,0 +1,99 @@
+<div class="converter-container">
+  <header class="converter-header">
+    <h1 class="title">{{ title }}</h1>
+    <p class="subtitle">{{ subtitle }}</p>
+  </header>
+  <!-- loading states -->
+  <div *ngIf="isLoadingCurrencies()" class="loading-section">
+    <app-loader [message]="'Loading Currencies...'"></app-loader>
+  </div>
+
+  <!-- main converter container -->
+  <div *ngIf="!isLoadingCurrencies()" class="converter-content">
+    <div class="conversion-form">
+      <!-- from currency -->
+      <!-- <div class="input-section">
+        <app-funds
+          [label]="'From'"
+          [currencies]="currencies()"
+          [disabled]="stateService.currentState().isLoading"
+          (currencyChange)="onFromValueChange($event)">
+        </app-funds>
+      </div> -->
+      <!-- From currency input -->
+      <!-- <div class="currency-input-group">
+        <label class="input-label">From</label>
+        <div class="input-row">
+          <select class="currency-select" [value]="stateService.currentState().fromCurrency"
+            (change)="onFromCurrencyChange($event)" [disabled]="stateService.currentState().isLoading">
+            <option value="" disabled>Select currency</option>
+            <option *ngFor="let currency of currencies()" [value]="currency.code">
+              {{ currency.code }} - {{ currency.name }}
+            </option>
+          </select>
+
+          <input type="number" class="amount-input" [value]="stateService.currentState().fromFund"
+            (input)="onFromAmountChange($event)" [disabled]="stateService.currentState().isLoading"
+            placeholder="Enter amount" step="0.01" min="0">
+        </div>
+      </div> -->
+      <app-funds
+        [label]="'From'"
+        [currencies]="currencies()"
+        (currencyChange)="onFromValueChange($event)"
+        [disabled]="stateService.currentState().isLoading">
+      </app-funds>
+
+      <!-- swap funds -->
+      <div class="swap-section">
+        <button class="swap-button" (click)="onSwapCurrencies()" [disabled]="stateService.currentState().isLoading"
+          title="Swap Currencies">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z" />
+          </svg>
+        </button>
+      </div>
+      <!-- to currency input -->
+      <app-funds [label]="'To'" [currencies]="currencies()" [disabled]="stateService.currentState().isLoading"
+        (currencyChange)="onToCurrencyChange($event)">
+      </app-funds>
+
+      <!-- Convert button - the main action -->
+      <div class="action-section">
+        <button class="convert-btn" (click)="onConvert()" [disabled]="stateService.currentState().isLoading ||
+                          stateService.currentState().fromFund <= 0 ||
+                          !stateService.currentState().fromCurrency ||
+                          !stateService.currentState().toCurrency"
+          [class.loading]="stateService.currentState().isLoading">
+
+          <app-loader *ngIf="stateService.currentState().isLoading" size="small">
+          </app-loader>
+
+          <span *ngIf="!stateService.currentState().isLoading">
+            Convert
+          </span>
+        </button>
+      </div>
+
+      <!-- Error display -->
+      <div *ngIf="stateService.currentState().error" class="error-section">
+        <div class="error-message">
+          {{ stateService.currentState().error }}
+        </div>
+        <button class="retry-btn" (click)="onRetry()">
+          Try Again
+        </button>
+      </div>
+
+      <!-- Result summary -->
+      <div *ngIf="stateService.currentState().toFund > 0 && !stateService.currentState().error" class="result-summary">
+        <div class="conversion-rate">
+          {{ stateService.currentState().fromFund | number:'1.2-2' }}
+          {{ stateService.currentState().fromCurrency }} =
+          <strong>{{ stateService.currentState().toFund | number:'1.2-2' }}
+            {{ stateService.currentState().toCurrency }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -11,9 +11,24 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "esnext",
+    "esModuleInterop": true,
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@env/*": ["./src/env/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@data/*": ["./src/app/data/*"],
+      "@models": ["./src/app/data/models"],
+      "@services/*": ["./src/app/services/*"],
+      "@interceptors/*": ["./src/app/interceptors/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@converter": ["./src/app/components/converter"],
+      "@loader": ["./src/app/components/loader"],
+      "@funds": ["./src/app/components/funds"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

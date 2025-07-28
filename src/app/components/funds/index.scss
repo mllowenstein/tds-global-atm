@@ -1,0 +1,82 @@
+// components/currency-input/currency-input.component.scss
+.currency-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+
+  // Quick responsive - would use mixins in prod
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
+.currency-select {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-color-alpha);
+  }
+
+  &:disabled {
+    background: var(--disabled-bg);
+    cursor: not-allowed;
+  }
+}
+
+.amount-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-color-alpha);
+  }
+
+  &:disabled {
+    background: var(--disabled-bg);
+    cursor: not-allowed;
+  }
+
+  &[readonly] {
+    background: var(--readonly-bg);
+    font-weight: 600;
+    color: var(--success-color);
+  }
+}
+
+.result-display {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--success-color);
+  text-align: center;
+  padding: 1rem;
+  background: var(--success-bg);
+  border-radius: 8px;
+  border: 2px solid var(--success-border);
+}

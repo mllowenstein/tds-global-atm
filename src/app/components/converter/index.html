@@ -1,0 +1,98 @@
+
+<div class="converter-container">
+  <header class="converter-header">
+    <h1 class="title">TDS Global ATM</h1>
+    <p class="subtitle">Simple. Fast. Accurate.</p>
+  </header>
+
+  <!-- loading currencies -->
+  <div *ngIf="isLoadingCurrencies()" class="loading-section">
+    <app-loader message="Loading currencies..."></app-loader>
+  </div>
+
+  <!-- main converter ui -->
+  <div *ngIf="!isLoadingCurrencies()" class="converter-card">
+    <div class="input-section">
+      <app-funds
+        [label]="'From'"
+        [currencies]="currencies()"
+        (currencyChange)="onFromCurrencyChange($event)"
+        [disabled]="stateService.currentState().isLoading">
+      </app-funds>
+
+      <!-- Swap button in the middle -->
+      <div class="swap-section">
+        <button class="swap-btn" (click)="onSwapCurrencies()" [disabled]="stateService.currentState().isLoading"
+          title="Swap currencies">
+          ⇅
+        </button>
+      </div>
+
+      <!-- To currency display -->
+      <!-- <div class="currency-input-group">
+        <label class="input-label">To</label>
+        <div class="input-row">
+          <select class="currency-select" [value]="stateService.currentState().toCurrency"
+            (change)="onToCurrencyChange($event)" [disabled]="stateService.currentState().isLoading">
+            <option value="" disabled>Select currency</option>
+            <option *ngFor="let currency of currencies()" [value]="currency.code">
+              {{ currency.code }} - {{ currency.name }}
+            </option>
+          </select>
+
+          <div class="result-display">
+            <span class="result-amount" *ngIf="stateService.currentState().toFund > 0">
+              {{ stateService.currentState().toFund | number:'1.2-2' }}
+            </span>
+            <span class="result-placeholder" *ngIf="stateService.currentState().toFund === 0">
+              0.00
+            </span>
+          </div>
+        </div>
+      </div> -->
+      <app-funds
+        [label]="'To'"
+        [currencies]="currencies()"
+        (currencyChange)="onToCurrencyChange($event)"
+        [disabled]="stateService.currentState().isLoading">
+      </app-funds>
+    </div>
+
+    <!-- Convert button - the main action -->
+    <div class="action-section">
+      <button class="convert-btn" (click)="onConvert()" [disabled]="stateService.currentState().isLoading ||
+                   stateService.currentState().fromFund <= 0 ||
+                   !stateService.currentState().fromCurrency ||
+                   !stateService.currentState().toCurrency" [class.loading]="stateService.currentState().isLoading">
+
+        <app-loader *ngIf="stateService.currentState().isLoading" size="small">
+        </app-loader>
+
+        <span *ngIf="!stateService.currentState().isLoading">
+          Convert
+        </span>
+      </button>
+    </div>
+
+    <!-- Error display -->
+    <div *ngIf="stateService.currentState().error" class="error-section">
+      <div class="error-message">
+        {{ stateService.currentState().error }}
+      </div>
+      <button class="retry-btn" (click)="onRetry()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Result summary -->
+    <div *ngIf="stateService.currentState().toFund > 0 && !stateService.currentState().error"
+      class="result-summary">
+      <div class="conversion-rate">
+        {{ stateService.currentState().fromFund | number:'1.2-2' }}
+        {{ stateService.currentState().fromCurrency }} =
+        <strong>{{ stateService.currentState().toFund | number:'1.2-2' }}
+          {{ stateService.currentState().toCurrency }}</strong>
+      </div>
+    </div>
+  </div>
+</div>

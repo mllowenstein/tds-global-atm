@@ -54,6 +54,54 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+## Additional Information
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This solution was submitted for an assessment that was intended to take
+approximately 2 hours to complete. Acknowledgement of the various improvements
+that would be encouraged if this solution were to integrated with a production
+application has been outlined below:
+
+🏗️ Architecture
+
+- State Management: Replace simple signals with NgRx or Akita
+- Error Handling: Comprehensive error boundary and retry logic
+- Type Safety: Strict TypeScript with exhaustive type checking
+- Testing: Unit tests, integration tests, e2e tests
+- Validation: Input validation with Angular validators
+
+🎨 Design System
+
+- Component Library: Reusable design system components
+- Accessibility: WCAG 2.1 AA compliance, screen reader support
+- Responsive: Mobile-first design with proper breakpoints
+- Animations: Smooth transitions and micro-interactions
+- Theming: Complete dark/light mode implementation
+
+🔒 Security & Performance
+
+- API Security: Backend proxy for API keys
+- Caching: Sophisticated cache invalidation strategy
+- Bundle Optimization: Code splitting and lazy loading
+- PWA: Service worker for offline functionality
+- SEO: Meta tags and structured data
+
+🛠️ Developer Experience
+
+- Linting: ESLint, Prettier, Stylelint configuration
+- CI/CD: Automated testing and deployment pipeline
+- Documentation: Comprehensive API documentation
+- Monitoring: Error tracking and performance monitoring
+
+🚀 Quick Setup
+
+- Clone and install: npm install
+- Add API key: Update env.ts with your CurrencyBeacon API key
+- Run: npm run local
+- Build: ng build --configuration production
+
+💡 Trade-offs Made
+
+✅ Functional MVP over perfect architecture
+✅ Visual appeal over comprehensive accessibility
+✅ Quick development over extensive testing
+✅ Working solution over optimal performance

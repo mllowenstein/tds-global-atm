@@ -1,4 +1,8 @@
-@use 'styles/main';
+// styles/main.scss
+@use 'variables';
+@use 'base';
+
+// Additional component imports would go here in production
 // Additional enhancements for the new color scheme
 
 // Enhanced button styles
@@ -96,19 +100,4 @@
     background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
     opacity: 0.5;
   }
-}
-
-
-@font-face {
-  font-family: 'Lato';
-  font-weight: 300, 400, 500, 600;
-  font-style: normal;
-  src: url('./assets/fonts/lato/Lato-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  font-weight: 300, 400, 500, 600;
-  font-style: normal;
-  src: url('./assets/fonts/montserrat/Montserrat-Regular.ttf') format('truetype');
 }

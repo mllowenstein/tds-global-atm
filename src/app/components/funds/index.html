@@ -1,0 +1,16 @@
+<div class="currency-input-group">
+  <label class="input-label">From</label>
+  <div class="input-row">
+    <select class="currency-select" [value]="stateService.currentState().fromCurrency"
+      (change)="onCurrencyChange($event)" [disabled]="stateService.currentState().isLoading">
+      <option value="" disabled>Select currency</option>
+      <option *ngFor="let currency of currencies" [value]="currency.code">
+        {{ currency.code }} - {{ currency.name }}
+      </option>
+    </select>
+
+    <input type="number" class="amount-input" [value]="stateService.currentState().fromFund"
+      (input)="onAmountChange($event)" [disabled]="stateService.currentState().isLoading" placeholder="Enter amount"
+      step="0.01" min="0">
+  </div>
+</div>
